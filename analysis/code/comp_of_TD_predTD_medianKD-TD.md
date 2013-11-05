@@ -1,13 +1,10 @@
-# Comparison of the measured TD, the predicted TD from the Kd, Julian, Area Model, and the predicted TD using the median KD in the model.
+# Comparison of TD predicted from median Kd, estimated Kd from DOC and with warming
 
 ## Introduction
 
-These code are mainly to redraw figure 8 for the boondoggle ms.  I am adding the predicted TD if the median Kd is used in the model
+This code is modified from the code used to draw figure 8 in the original boondoggle ms with the model.  These analysis is to compare the predicted TD using various constant Kd values to the observed values.
 
 ### Load data
-
-    getwd()
-    [1] "/Volumes/NO NAME/working_files/current_research/boondoggle/inland_waters_submission/revisions/revision_analysis"
 
     load("./data/boondoggle")
     load("./data/GTH91.case.ms")
@@ -77,8 +74,10 @@ F-statistic:  35.4 on 3 and 41 DF,  p-value: 1.862e-11
 
 ### Generate predicted TD using the predicted Kd values from the DOC concentration for 1 and 6 degr. C warming
 
+Reqires running the code from `climate_change_range_analysis.md` to get variables
+
 In the previous model I used the median Kd value and then added to it but in the revised model I used the Kd value predicted from the DOC concentration in lake GTH 91 (SCW 2009 estimate)
-  
+
     predTD.Kd.current <- (Kd.current * -3.08) + (GTH91.case.ms$Julian * 0.067) + (GTH91.case.ms$Area * 0.04) - 7.08
     predTD.Kd.low1 <- (Kd.low[1] * -3.08) + (GTH91.case.ms$Julian * 0.067) + (GTH91.case.ms$Area * 0.04) - 7.08
     predTD.Kd.low6 <- (Kd.low[6] * -3.08) + (GTH91.case.ms$Julian * 0.067) + (GTH91.case.ms$Area * 0.04) - 7.08
@@ -105,12 +104,12 @@ In the previous model I used the median Kd value and then added to it but in the
 
     par(las = 1, cex = 1.2)
     plot(TD ~ Julian, data = GTH91.case.ms, ylim = c(-1, 6), xlim = c(170, 220), xlab = "Julian Day", ylab = "Thermocline Depth (m)", pch = 16, lwd = 1.5)
-#    points(predTD.medianKd ~ Julian, data = GTH91.case.ms, pch = 1)
+    points(predTD.medianKd ~ Julian, data = GTH91.case.ms, pch = 1)
     points(predTD.Kd.current ~ Julian, data = GTH91.case.ms, pch = 5)
     points(predTD.Kd.low1 ~ Julian, data = GTH91.case.ms, pch = 2)
     points(predTD.Kd.low6 ~ Julian, data = GTH91.case.ms, pch = 0)
     abline(lm(TD ~ Julian, data = GTH91.case.ms), lwd = 1.5)
-#    abline(lm(predTD.medianKd ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
+    abline(lm(predTD.medianKd ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
     abline(lm(predTD.Kd.current ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
     abline(lm(predTD.Kd.low1 ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
     abline(lm(predTD.Kd.low6 ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
@@ -155,7 +154,7 @@ F-statistic: 110.7 on 1 and 9 DF,  p-value: 2.34e-06
 
 ~~~~
 
-#### Modeled TD by Julian Day
+#### Modeled TD based on Kd from DOC by Julian Day
 
     summary(lm(predTD.Kd.current ~ Julian, data = GTH91.case.ms), lty = 3, lwd = 1.5)
 
@@ -185,13 +184,34 @@ F-statistic: 1.164e+31 on 1 and 9 DF,  p-value: < 2.2e-16
 
 ~~~~
 
-### Plot of the mixed area of the models
+#### Modeled TD based on median Kd by Julian Day
 
-    plot(obs.mix.A/Area * 100 ~ Julian, data = GTH91.case.ms, ylim = c(0, 40))
-    points(Mix.Area/Area * 100 ~ Julian, data = GTH91.case.ms, pch = 16)
-    points(low1.mix.A/Area * 100 ~ Julian, data = GTH91.case.ms, pch = 2)
-    points(low6.mix.A/Area * 100 ~ Julian, data = GTH91.case.ms, pch = 2)
+    summary(lm(predTD.medianKd ~ Julian, data = GTH91.case.ms))
 
+##### Output
+
+~~~~
+
+    summary(lm(predTD.medianKd ~ Julian, data = GTH91.case.ms))
+
+Call:
+lm(formula = predTD.medianKd ~ Julian, data = GTH91.case.ms)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-1.494e-15 -4.505e-16 -3.261e-17  4.744e-16  1.640e-15 
+
+Coefficients:
+              Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) -9.570e+00  3.848e-15 -2.487e+15   <2e-16 ***
+Julian       6.700e-02  1.971e-17  3.399e+15   <2e-16 ***
+---
+
+Residual standard error: 8.661e-16 on 9 degrees of freedom
+Multiple R-squared:     1,	Adjusted R-squared:     1 
+F-statistic: 1.155e+31 on 1 and 9 DF,  p-value: < 2.2e-16 
+
+~~~~~
 
 
 

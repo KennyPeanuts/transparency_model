@@ -48,8 +48,6 @@ F-statistic: 35.05 on 2 and 42 DF,  p-value: 1.115e-09
 
 ## Using this model to predict TD in GTH 91 based on measurements of Kd and Julian day
 
-    Use working dir =
-    "/Volumes/NO NAME/working_files/current_research/boondoggle/inland_waters_submission/revisions/revision_analysis"
 
 ### Load Workspace GTH91.case.ms
 
@@ -195,6 +193,16 @@ The 1.04 d-1 value is the estimated Kd based on the 5.5 mg L-1 concentration fro
 
     est.TD.DOCKd
 
+##### Output
+
+~~~~
+
+est.TD.DOCKd
+ [1] 1.465897 1.960597 2.356357 2.949997 3.296287 3.593107 2.059537 2.504767
+ [9] 2.752117 3.098407 3.543637
+
+~~~~
+
 ##### Regression of TD estimated from SCW-DOC value by Julian
 
-    
+    summary(lm(set.TD.DOCKd        
